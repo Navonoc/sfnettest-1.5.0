@@ -21,6 +21,14 @@ static inline void sfnt_tsc(uint64_t* pval) {
 }
 #elif defined(__i386__)
 # define sfnt_tsc(pval)  __asm__ __volatile__("rdtsc" : "=A" (*(pval)))
+#elif defined(__aarch64__)
+#include <stdint.h>
+#include <time.h>
+static inline void sfnt_tsc(uint64_t* pval){
+  struct timespec ts;
+  clock_gettime(CLOCK_MONOTONIC, &ts);
+  *pval = (uint64_t)ts.tv_sec * 1e9 + ts.tv_nsec;
+}
 #else
 # error Unknown processor.
 #endif
