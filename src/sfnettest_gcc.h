@@ -25,12 +25,7 @@ static inline void sfnt_tsc(uint64_t* pval) {
 #include <stdint.h>
 #include <time.h>
 static inline void sfnt_tsc(uint64_t* pval){
-    uint64_t virtual_timecount_value;
-    uint64_t counter_frequency;
-    asm volatile("mrs %0, cntvct_el0" : "=r"(virtual_timecount_value));
-    asm volatile("mrs %0, cntfrq_el0; isb;" : "=r"(counter_frequency));
-    uint64_t nansecsper_count=(uint64_t) 1000000000ULL/counter_frequency;
-    *pval = (uint32_t)virtual_timecount_value*nansecsper_count;
+    __asm__ __volatile__("mrs %0, cntvct_el0" : "=r" (*pval));
 }
 #else
 # error Unknown processor.
